@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: nzb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: linuxserver/sonarr
+        imagePullPolicy: Always
+        ports:
+        - name: sonarr
+          containerPort: 8989
+        env:
+        - name: PGID
+          value: "0"
+        - name: PUID
+          value: "0"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: sonarr-downloads
+          mountPath: /download
+        - name: sonarr-lib
+          mountPath: /tv
+      volumes:
+      - name: config
+        hostPath:
+          path: /media/multimedia/apps/sonarr
+      - name: sonarr-downloads
+        hostPath:
+          path: /media/multimedia/Downloaded
+      - name: sonarr-lib
+        hostPath:
+          path: /media/multimedia/TV

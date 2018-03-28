@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nzbget
+  namespace: nzb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nzbget
+    spec:
+      volumes:
+      - name: config
+        hostPath:
+          path: /media/multimedia/apps/nzbget
+      - name: intermediate
+        hostPath:
+          path: /storage/apps/intermediate
+      - name: downloads
+        hostPath:
+          path: /media/multimedia
+      containers:
+      - name: nzbget
+        image: linuxserver/nzbget:latest
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: intermediate
+          mountPath: /intermediate
+        - name: downloads
+          mountPath: /downloads
+        env:
+        - name: PUID
+          value: '0'
+        - name: PGID
+          value: '0'
+        - name: TZ
+          value: 'America/New_York'
+        ports:
+        - name: nzbget
+          containerPort: 6789
+        readinessProbe:
+          tcpSocket:
+            port: nzbget
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: nzbget
+          initialDelaySeconds: 15
+          periodSeconds: 20
