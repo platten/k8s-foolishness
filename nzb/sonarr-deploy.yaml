@@ -32,7 +32,7 @@ spec:
       volumes:
       - name: config
         hostPath:
-          path: /media/multimedia/apps/sonarr
+          path: /media/nfs/sonarr/
       - name: sonarr-downloads
         hostPath:
           path: /media/multimedia/Downloaded

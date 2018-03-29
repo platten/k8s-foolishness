@@ -1,17 +1,17 @@
 #!/bin/bash
 set +o
 
-groupadd --system etcd
+groupadd --system pwx-etcd
 useradd --home-dir "/var/lib/pwx-etcd" \
       --system \
       --shell /bin/false \
-      -g etcd \
-      etcd
+      -g pwx-etcd \
+      pwx-etcd
 
 mkdir -p /etc/pwx-etcd
-chown etcd:etcd /etc/pwx-etcd
+chown -R pwx-etcd:pwx-etcd /etc/pwx-etcd
 mkdir -p /var/lib/pwx-etcd
-chown etcd:etcd /var/lib/pwx-etcd
+chown -R pwx-etcd:pwx-etcd /var/lib/pwx-etcd
 
 
 ETCD_VER=v3.3.2
@@ -41,7 +41,7 @@ IP=`ip addr | grep -Po '(?!(inet 127.\d.\d.1))(inet \K(\d{1,3}\.){3}\d{1,3})'  |
 PEERS='http://192.168.1.6:2390,http://192.168.1.7:2390,http://192.168.1.135:2390'
 CLUSTER='infra0=http://192.168.1.135:2390,infra1=http://192.168.1.6:2390,infra2=http://192.168.1.7:2390'
 
-cat <<EOF >/etc/pwx-etcd/etcd.conf.yml
+cat <<EOF >/etc/pwx-etcd/pwx-etcd.conf.yml
 name: ${ETCD_HOSTNAME}
 data-dir: /var/lib/pwx-etcd
 initial-cluster-state: 'new'
@@ -58,14 +58,14 @@ echo "\n\n=====================\n\n"
 cat <<EOF >/lib/systemd/system/pwx-etcd.service
 [Unit]
 After=network.target
-Description=etcd - highly-available key value store
+Description=pwx-etcd - highly-available key value store
 
 [Service]
 LimitNOFILE=65536
 Restart=on-failure
 Type=notify
-ExecStart=/usr/bin/etcd --config-file /etc/pwx-etcd/etcd.conf.yml
-User=etcd
+ExecStart=/usr/bin/etcd --config-file /etc/pwx-etcd/pwx-etcd.conf.yml
+User=pwx-etcd
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubernetes-dashboard
+    chart: kubernetes-dashboard-0.6.2
+    heritage: Tiller
+    kubernetes.io/cluster-service: "true"
+    release: kube-system
+  name: kube-system-kubernetes-dashboard
+  namespace: kube-system
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: https
+  selector:
+    app: kubernetes-dashboard
+    release: kube-system
+  sessionAffinity: None
+  type: LoadBalancer
